@@ -28,6 +28,7 @@ interface TextTypeProps {
   textColors?: string[];
   variableSpeed?: { min: number; max: number };
   onSentenceComplete?: (sentence: string, index: number) => void;
+  onComplete?: () => void;
   startOnVisible?: boolean;
   reverseMode?: boolean;
 }
@@ -49,6 +50,7 @@ const TextType = ({
   textColors = [],
   variableSpeed,
   onSentenceComplete,
+  onComplete,
   startOnVisible = false,
   reverseMode = false,
   ...props
@@ -95,6 +97,19 @@ const TextType = ({
     return () => observer.disconnect();
   }, [startOnVisible]);
 
+  // Вызываем onComplete, когда весь текст напечатан и не происходит удаление
+  useEffect(() => {
+    if (
+      onComplete &&
+      !isDeleting &&
+      currentCharIndex === textArray[0].length &&
+      textArray.length === 1 &&
+      displayedText === textArray[0]
+    ) {
+      onComplete();
+    }
+  }, [onComplete, isDeleting, currentCharIndex, textArray, displayedText]);
+
   useEffect(() => {
     if (showCursor && cursorRef.current) {
       gsap.set(cursorRef.current, { opacity: 1 });
@@ -111,7 +126,7 @@ const TextType = ({
   useEffect(() => {
     if (!isVisible) return;
 
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
 
     const currentText = textArray[currentTextIndex];
     const processedText = reverseMode
@@ -125,11 +140,9 @@ const TextType = ({
           if (currentTextIndex === textArray.length - 1 && !loop) {
             return;
           }
-
           if (onSentenceComplete) {
             onSentenceComplete(textArray[currentTextIndex], currentTextIndex);
           }
-
           setCurrentTextIndex((prev) => (prev + 1) % textArray.length);
           setCurrentCharIndex(0);
           timeout = setTimeout(() => {}, pauseDuration);
@@ -149,10 +162,16 @@ const TextType = ({
             },
             variableSpeed ? getRandomSpeed() : typingSpeed
           );
-        } else if (textArray.length > 1) {
-          timeout = setTimeout(() => {
-            setIsDeleting(true);
-          }, pauseDuration);
+        } else {
+          // Если строка одна и loop=false, вызываем onSentenceComplete сразу после печати
+          if (onSentenceComplete && textArray.length === 1 && !loop) {
+            onSentenceComplete(textArray[currentTextIndex], currentTextIndex);
+          }
+          if (textArray.length > 1) {
+            timeout = setTimeout(() => {
+              setIsDeleting(true);
+            }, pauseDuration);
+          }
         }
       }
     };

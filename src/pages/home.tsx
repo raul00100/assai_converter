@@ -1,38 +1,33 @@
+//components
 import Header from "../components/header";
-import { useState, useEffect } from "react";
-import TextType from "../animation/TextType";
 import shark from "../assciText/shark.txt?raw";
-import { motion } from "motion/react";
+import { useLocalStorage } from "../components/useLocalStorage";
+//animations and styles
 import DecryptedText from "../animation/DecryptedTextProps";
+import { motion } from "motion/react";
+import TextType from "../animation/TextType";
+import generalStyles from "@/components/styleExport";
+
+const { terminal, terminalLabel } = generalStyles;
 
 export default function Home() {
-  const [showShark, setShowShark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("showShark") === "true";
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (showShark && typeof window !== "undefined") {
-      localStorage.setItem("showShark", "true");
-    }
-  }, [showShark]);
+  const [showShark, setShowShark] = useLocalStorage("shoShark", false);
 
   return (
-    <div className="h-screen overflow-auto">
-      <div className="w-screen flex flex-row">
-        <Header />
-      </div>
-      <div
-        className={`bg-black border-1 border-zinc-500 text-white w-[1300px] min-h-[100px] max-h-[830px] font-mono flex flex-col mt-10 mx-auto`}
-      >
-        <div className="flex items-center m-3 bg-white text-black pl-3">
+    <div>
+      <Header />
+      <div className={terminal}>
+        <div className={terminalLabel}>
           <p> UW PICO 5.09 </p>
         </div>
+        {/* show textType animation once (when typeOf window === "undefined") and then use DecryptedText effect */}
         <div className="px-5">
           {showShark ? (
-            <div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
               <div className="flex flex-col gap-5 text-sm">
                 <DecryptedText text="About This Project " />
                 <DecryptedText text="This website was created by an enthusiast who has always been fascinated by the beauty of ASCII art — the unique way of turning ordinary text, images, and videos into visual stories made entirely of characters." />
@@ -40,16 +35,10 @@ export default function Home() {
                 <DecryptedText text="Isn't it cool ?" />
               </div>
 
-              <motion.pre
-                className="scale-70 text-xs"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 2 }}
-              >
-                {shark}
-              </motion.pre>
-            </div>
+              <pre className="text-xs scale-70">{shark}</pre>
+            </motion.div>
           ) : (
+            //show animation only to new user
             <div>
               <TextType
                 text={[

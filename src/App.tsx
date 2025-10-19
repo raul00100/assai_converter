@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/home";
-import TextConverter from "./pages/TextConverter";
+import TextConverter from "./pages/textConverter";
 import ImageConverter from "./pages/imageConverter";
 import VideoConverter from "./pages/videoConverter";
 
@@ -25,7 +25,7 @@ export default function App() {
   ]);
 
   return (
-    <div className="bg-[#0d1116ff] w-screen h-screen ">
+    <div className="bg-[#0d1116ff] w-screen h-screen overflow-auto">
       <RouterProvider router={router} />
     </div>
   );

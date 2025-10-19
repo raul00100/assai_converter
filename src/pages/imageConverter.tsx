@@ -1,52 +1,75 @@
+//components
 import Header from "../components/header";
-import { useState, useEffect } from "react";
+import { useLocalStorage } from "../components/useLocalStorage";
+import linux from "../assciText/linux.txt?raw";
+import linuxImg from "../images/linuxImg.webp";
+import arrow2 from "../assciText/arrow2.txt?raw";
+//animations and styles
 import TextType from "../animation/TextType";
 import DecryptedText from "../animation/DecryptedTextProps";
+import generalStyles from "@/components/styleExport";
+import { motion } from "motion/react";
+
+const { terminal, terminalLabel } = generalStyles;
 
 export default function ImageConverter() {
-  const [showed, setShowed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("showed") === "true";
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    if (showed && typeof window !== "undefined") {
-      localStorage.setItem("showShark", "true");
-    }
-  }, [showed]);
-
+  const [showImage, setShowImage] = useLocalStorage("showImage", false);
   return (
-    <div className="h-screen overflow-auto">
-      <div className="w-screen flex flex-row">
-        <Header />
-      </div>
-      <div
-        className={`bg-black border-1 border-zinc-500 text-white w-[1300px] min-h-[100px] max-h-[830px] font-mono flex flex-col mt-10 mx-auto`}
-      >
-        <div className="flex items-center m-3 bg-white text-black pl-3">
+    <div>
+      <Header />
+      <div className={terminal}>
+        <div className={terminalLabel}>
           <p> UW PICO 5.09 </p>
         </div>
+        {/* show textType animation once (when typeOf window === "undefined") and then use DecryptedText effect */}
         <div className="px-5">
-          {showed ? (
-            <div className="flex flex-col gap-5 text-sm">
-              <DecryptedText text="About This Project " />
-              <DecryptedText text="This website was created by an enthusiast who has always been fascinated by the beauty of ASCII art — the unique way of turning ordinary text, images, and videos into visual stories made entirely of characters." />
-            </div>
+          {showImage ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-col gap-5 text-sm">
+                <DecryptedText text="On this page you can upload an image and convert it into ASCII" />
+                <DecryptedText text="Here is some examples:" />
+              </div>
+            </motion.div>
           ) : (
             <div>
               <TextType
                 text={[
-                  `About This Project\n\nThis website was created by an enthusiast who has always been fascinated by the beauty of ASCII art — the unique way of turning ordinary text, images, and videos into visual stories made entirely of characters.\n\nIt was built out of pure passion, to let others experience the same joy and creativity that come from exploring this digital art form. Here, you can easily convert your own content into ASCII designs and see how technology and art come together in a simple yet mesmerizing way\n\nIsn't it cool ?`,
+                  `On this page you can upload an image and convert it into ASCII\n\nHere is some examples:`,
                 ]}
                 typingSpeed={15}
                 showCursor={true}
                 cursorCharacter="|"
-                onComplete={() => setShowed(true)}
+                onComplete={() => setShowImage(true)}
                 className="text-sm"
               />
             </div>
+          )}
+          {/* if user is new we show the entire content after the textype animation */}
+          {showImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-col gap-5 text-sm">
+                <DecryptedText text="On this page you can upload an image and convert it into ASCII" />
+                <DecryptedText text="Here is some examples:" />
+              </div>
+
+              <div className="flex flex-row items-center mt-5">
+                <img
+                  src={linuxImg}
+                  alt="linux penguin"
+                  className="h-80 p-2 w-65 bg-zinc-900 mr-10 "
+                />
+                <pre className="text-[5px]">{arrow2}</pre>
+                <pre className="text-[5px] py-2">{linux}</pre>
+              </div>
+            </motion.div>
           )}
         </div>
       </div>

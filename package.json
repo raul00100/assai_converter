@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@headlessui/react": "^2.2.9",
     "@heroui/select": "^2.4.28",
+    "@mui/icons-material": "^7.3.4",
+    "@mui/material": "^7.3.4",
     "@radix-ui/react-select": "^2.2.6",
     "@tailwindcss/vite": "^4.1.14",
     "class-variance-authority": "^0.7.1",
@@ -22,9 +26,13 @@
     "lucide-react": "^0.545.0",
     "motion": "^12.23.24",
     "react": "^19.1.1",
+    "react-aria": "^3.44.0",
+    "react-aria-components": "^1.13.0",
+    "react-colorful": "^5.6.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4",
     "react-select": "^5.10.2",
+    "react-stately": "^3.42.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14",
     "three": "^0.180.0"

@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import arrow from "../assciText/arrow.txt?raw";
 import { Link } from "react-router-dom";
 
-const arrowStyle = "text-[7px] text-green-400 cursor-pointer mb-3";
+const arrowStyle = "text-[7px] text-green-400 cursor-pointer";
 
 export default function Header() {
   const location = useLocation();

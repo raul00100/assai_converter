@@ -21,14 +21,16 @@ import { HexColorPicker } from "react-colorful";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
-const field =
-  "w-50 h-[44px] border-1 border-green-400 focus:border-2 p-1.5 outline-none mr-5";
-const fieldCont = "flex flex-col gap-2";
-const selectItemStyle = "bg-black border-1 border-green-400 rounded-none";
-const selectContentStyle =
-  "rounded-none bg-black text-white border-1 border-green-400";
-const selectTriggerStyle = "w-[180px] min-h-[44px] rounded-none";
-const { terminal, terminalLabel } = generalStyles;
+const {
+  terminal,
+  terminalLabel,
+  field,
+  fieldCont,
+  selectItemStyle,
+  selectTriggerStyle,
+  selectContentStyle,
+  buttonStyle,
+} = generalStyles;
 
 export default function TextConverter() {
   const [showText, setShowText] = useLocalStorage("showText", false);
@@ -189,7 +191,7 @@ export default function TextConverter() {
                   {input !== "" && (
                     <button
                       onClick={handleCopy}
-                      className="w-30 h-11 border-1 border-green-400 hover:bg-green-400 hover:text-black tex-white cursor-pointer active:scale-90 mt-8 "
+                      className={`${buttonStyle} mt-8`}
                     >
                       Copy
                     </button>

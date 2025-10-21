@@ -31,5 +31,4 @@ export const availableFonts = [
   "Script",
 ];
 
-// exporting figlet with downloaded fonts
 export default figlet;

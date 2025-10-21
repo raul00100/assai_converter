@@ -30,7 +30,7 @@ export default function Home() {
             >
               <div className="flex flex-col gap-5 text-sm">
                 <DecryptedText text="About This Project " />
-                <DecryptedText text="This website was created by an enthusiast who has always been fascinated by the beauty of ASCII art — the unique way of turning ordinary text, images, and videos into visual stories made entirely of characters." />
+                <DecryptedText text="This website was created by an enthusiast who has been fascinated by the beauty of ASCII art — the unique way of turning ordinary text, images, and videos into visual stories made entirely of characters." />
                 <DecryptedText text="It was built out of pure passion, to let others experience the same joy and creativity that come from exploring this digital art form. Here, you can easily convert your own content into ASCII designs and see how technology and art come together in a simple yet mesmerizing way." />
                 <DecryptedText text="Isn't it cool ?" />
               </div>

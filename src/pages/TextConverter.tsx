@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useLocalStorage } from "../components/useLocalStorage";
+import { useState, useEffect, useRef } from "react";
+import { useLocalStorage } from "../components/functions/useLocalStorage";
 //components
 import {
   Select,
@@ -9,13 +9,14 @@ import {
   SelectValue,
 } from "../components/select";
 import Header from "../components/header";
+import CopyDownload from "@/components/functions/copyDownload";
 //animations and styles
 import TextType from "../animation/TextType";
 import DecryptedText from "../animation/DecryptedTextProps";
 import generalStyles from "@/components/styleExport";
 import { motion } from "motion/react";
 //libraries for customization
-import figlet, { availableFonts } from "../components/asciiFonts";
+import figlet, { availableFonts } from "../components/symbols/asciiFonts";
 import { HexColorPicker } from "react-colorful";
 //icons
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -29,7 +30,6 @@ const {
   selectItemStyle,
   selectTriggerStyle,
   selectContentStyle,
-  buttonStyle,
 } = generalStyles;
 
 export default function TextConverter() {
@@ -42,20 +42,20 @@ export default function TextConverter() {
   const sizes = ["text-xs", "text-sm", "text-base", "text-lg", "text-xl"];
   const [textSize, setTextSize] = useLocalStorage("textSize", "text-base");
 
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const refText = useRef<HTMLPreElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
   //figlet library which we use for converting our text to ascii
   useEffect(() => {
     figlet.text(input, { font }, (err, data) => {
       if (!err && data) setAscii(data);
     });
   }, [input, font]);
-
-  const handleCopy = async () => {
-    try {
-      navigator.clipboard.writeText(ascii);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <div>
@@ -100,108 +100,115 @@ export default function TextConverter() {
             >
               {/* fields and ascii */}
               <div className="whitespace-pre font-mono flex flex-col mt-15 items-start w-full ">
-                {/* only filed */}
-                <div className="flex flex-row gap-5">
-                  <div className={fieldCont}>
-                    <label>Type here:</label>
-                    <textarea
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="..."
-                      className={field}
-                    />
-                  </div>
-                  <div className={fieldCont}>
-                    <label>Choose font:</label>
-                    <Select value={font} onValueChange={setFont}>
-                      <SelectTrigger
-                        className={`${selectTriggerStyle} ${field}`}
-                      >
-                        <SelectValue
-                          placeholder="Theme"
-                          className="outline-none"
-                        />
-                      </SelectTrigger>
-                      <SelectContent className={selectContentStyle}>
-                        {availableFonts.map((f) => (
-                          <SelectItem
-                            key={f}
-                            value={f}
-                            className={selectItemStyle}
-                          >
-                            {f}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                {/* settings and save options */}
+                <div>
+                  {/* setting options */}
+                  <div className="flex flex-row gap-5">
+                    <div className={fieldCont}>
+                      <label>Type here:</label>
+                      <textarea
+                        ref={inputRef}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="..."
+                        className={`${field} w-[218px]`}
+                      />
+                    </div>
 
-                  <div className={fieldCont}>
-                    <label>Choose text size:</label>
-                    <Select value={textSize} onValueChange={setTextSize}>
-                      <SelectTrigger
-                        className={`${selectTriggerStyle} ${field}`}
-                      >
-                        <SelectValue
-                          placeholder="Theme"
-                          className="outline-none"
-                        />
-                      </SelectTrigger>
-                      <SelectContent className={selectContentStyle}>
-                        {sizes.map((s) => (
-                          <SelectItem
-                            key={s}
-                            value={s}
-                            className={selectItemStyle}
-                          >
-                            {s}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                    <div className={fieldCont}>
+                      <label>Choose font:</label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger
+                          className={`${selectTriggerStyle} ${field}`}
+                        >
+                          <SelectValue
+                            placeholder="Theme"
+                            className="outline-none"
+                          />
+                        </SelectTrigger>
+                        <SelectContent className={selectContentStyle}>
+                          {availableFonts.map((f) => (
+                            <SelectItem
+                              key={f}
+                              value={f}
+                              className={selectItemStyle}
+                            >
+                              {f}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div className={fieldCont}>
-                    <label>Choose Color:</label>
-                    <div className="relative">
-                      <div
-                        className={`${field} w-54.5 flex items-center justify-center cursor-pointer`}
-                        onClick={() => setShowColors((s) => !s)}
-                        role="button"
-                        aria-expanded={showColors}
-                      >
-                        {showColors ? (
-                          <KeyboardArrowUpIcon className="scale-140" />
-                        ) : (
-                          <KeyboardArrowDownIcon className="scale-140" />
+                    <div className={fieldCont}>
+                      <label>Choose text size:</label>
+                      <Select value={textSize} onValueChange={setTextSize}>
+                        <SelectTrigger
+                          className={`${selectTriggerStyle} ${field}`}
+                        >
+                          <SelectValue className="outline-none" />
+                        </SelectTrigger>
+                        <SelectContent className={selectContentStyle}>
+                          {sizes.map((s) => (
+                            <SelectItem
+                              key={s}
+                              value={s}
+                              className={selectItemStyle}
+                            >
+                              {s}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className={fieldCont}>
+                      <label>Choose Color:</label>
+                      <div className="relative">
+                        <div
+                          className={`${field} w-[218px] flex items-center justify-center cursor-pointer`}
+                          onClick={() => setShowColors((s) => !s)}
+                          role="button"
+                          aria-expanded={showColors}
+                        >
+                          {showColors ? (
+                            <KeyboardArrowUpIcon className="scale-140" />
+                          ) : (
+                            <KeyboardArrowDownIcon className="scale-140" />
+                          )}
+                        </div>
+
+                        {showColors && (
+                          <div className="absolute left-0 top-full mt-1 z-50">
+                            <div className="p-2 rounded-none border-1 border-green-400">
+                              <HexColorPicker
+                                color={color}
+                                onChange={setColor}
+                              />
+                            </div>
+                          </div>
                         )}
                       </div>
-
-                      {showColors && (
-                        <div className="absolute left-0 top-full mt-1 z-50">
-                          <div className="p-2 rounded-none border-1 border-green-400">
-                            <HexColorPicker color={color} onChange={setColor} />
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
 
+                  {/* copy and save  */}
                   {/* allow copy when input is not empty  */}
-                  {input !== "" && (
-                    <button
-                      onClick={handleCopy}
-                      className={`${buttonStyle} mt-8`}
-                    >
-                      Copy
-                    </button>
+                  {input !== "" ? (
+                    <div className="h-[80px] flex items-center">
+                      <CopyDownload ascii={ascii} refText={refText} />
+                    </div>
+                  ) : (
+                    <div className="h-[80px] w-20" />
                   )}
                 </div>
+
                 {/* limit width parameter to make ascii scrollable */}
                 <div className="mt-5 w-full max-w-[1300px] h-[300px] flex items-center overflow-auto">
                   <pre
                     className={`${textSize} font-mono whitespace-pre`}
                     style={{ color }}
+                    ref={refText}
                   >
                     {ascii}
                   </pre>

@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 //components
 import Header from "../components/header";
-import { useLocalStorage } from "../components/useLocalStorage";
+import { useLocalStorage } from "../components/functions/useLocalStorage";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Slider from "rc-slider";
 import {
@@ -11,6 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/select";
+import { charOptions } from "../components/symbols/charOptions";
+import CopyDownload from "@/components/functions/copyDownload";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 //animations and styles
 import TextType from "../animation/TextType";
 import DecryptedText from "../animation/DecryptedTextProps";
@@ -26,40 +30,20 @@ const {
   selectItemStyle,
   selectTriggerStyle,
   selectContentStyle,
-  buttonStyle,
 } = generalStyles;
+const settingRow =
+  "flex flex-row gap-15 border-b-1 border-green-400 pb-5 w-124";
 
 export default function ImageConverter() {
   const [showImage, setShowImage] = useLocalStorage("showImage", false);
   const [asciiArt, setAsciiArt] = useState("");
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const charOptions = [
-    {
-      name: "classChars",
-      elements: "@%#*+=-:. ",
-    },
-    {
-      name: "mathChars",
-      elements: "ΣΔ∑πλθ√∞≈≠<>+-*/^|",
-    },
-    {
-      name: "minimalChars",
-      elements: "#=.- ",
-    },
-    {
-      name: "fancyChars",
-      elements: "█▓▒░•◦·",
-    },
-    {
-      name: "digitalChars",
-      elements: "0123456789",
-    },
-  ];
   const [chars, setChars] = useState("@%#*+=-:. ");
   const [artSize, setaArtSize] = useState(80);
+  const [invert, setInvert] = useState(false);
 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgSize = useRef({ width: 0, height: 0, x: 0, y: 0 });
+  const refArt = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
     setAsciiArt(generateAscii(artSize));
@@ -164,28 +148,6 @@ export default function ImageConverter() {
     return asciiImage;
   };
 
-  const handleCopy = async () => {
-    try {
-      navigator.clipboard.writeText(asciiArt);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const downloadAscii = () => {
-    const blob = new Blob([asciiArt], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ascii-art.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div>
       <Header />
@@ -247,83 +209,105 @@ export default function ImageConverter() {
                     </label>
                   </div>
                   {/* settings */}
-                  <div className="flex flex-col gap-7">
-                    <div>
-                      <label>Size:</label>
-                      <div className="flex flex-row items-center gap-1.5 w-55">
-                        <Slider
-                          min={30}
-                          max={170}
-                          value={artSize}
-                          onChange={(value) => {
-                            if (typeof value === "number") setaArtSize(value);
-                          }}
-                          // active line
-                          trackStyle={{
-                            backgroundColor: "#4ade80",
-                            height: 6, //
-                          }}
-                          // slider 🟢
-                          handleStyle={{
-                            borderColor: "#4ade80",
-                            height: 15,
-                            width: 15,
-                            marginTop: -5,
-                            backgroundColor: "#000000",
-                          }}
-                          // inactive line
-                          railStyle={{
-                            backgroundColor: "#333",
-                            height: 6,
-                          }}
-                          className="min-w-50"
-                        />
-                        <p>{artSize}</p>
+                  <div className={`flex flex-col gap-7`}>
+                    {/* 1 row */}
+                    <div className={settingRow}>
+                      <div>
+                        <label>Characters:</label>
+                        <div className="flex flex-row items-center gap-1.5 w-[218px] mt-1.5">
+                          <Slider
+                            min={30}
+                            max={170}
+                            value={artSize}
+                            onChange={(value) => {
+                              if (typeof value === "number") setaArtSize(value);
+                            }}
+                            // active line
+                            trackStyle={{
+                              backgroundColor: "#4ade80",
+                              height: 6, //
+                            }}
+                            // slider 🟢
+                            handleStyle={{
+                              borderColor: "#4ade80",
+                              height: 15,
+                              width: 15,
+                              marginTop: -5,
+                              backgroundColor: "#000000",
+                            }}
+                            // inactive line
+                            railStyle={{
+                              backgroundColor: "#333",
+                              height: 6,
+                            }}
+                            className={`min-w-50`}
+                          />
+                          <p>{artSize}</p>
+                        </div>
+                      </div>
+
+                      <div className={fieldCont}>
+                        <label>Choose style:</label>
+                        <Select value={chars} onValueChange={setChars}>
+                          <SelectTrigger
+                            className={`${selectTriggerStyle} ${field} w-[218px]`}
+                          >
+                            <SelectValue
+                              placeholder="ASCII Style"
+                              className="outline-none"
+                            />
+                          </SelectTrigger>
+                          <SelectContent className={`${selectContentStyle}`}>
+                            {charOptions.map((char, idx) => (
+                              <SelectItem
+                                key={idx}
+                                value={char.elements}
+                                className={selectItemStyle}
+                              >
+                                {char.name} - {char.elements}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
-                    <div className={fieldCont}>
-                      <label>Choose text size:</label>
-                      <Select value={chars} onValueChange={setChars}>
-                        <SelectTrigger
-                          className={`${selectTriggerStyle} ${field}`}
-                        >
-                          <SelectValue
-                            placeholder="ASCII Style"
-                            className="outline-none"
+                    <div className={settingRow}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: "#4ade80", //🟢
+                              },
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: "#4ade80", //checked track
+                                },
+                              "& .MuiSwitch-track": {
+                                backgroundColor: "#9ca3af", // unchecked track
+                              },
+                            }}
+                            value={invert}
+                            onChange={() => setInvert((s) => !s)}
                           />
-                        </SelectTrigger>
-                        <SelectContent className={selectContentStyle}>
-                          {charOptions.map((char, idx) => (
-                            <SelectItem
-                              key={idx}
-                              value={char.elements}
-                              className={selectItemStyle}
-                            >
-                              {char.name} - {char.elements}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        }
+                        label="Invert colors"
+                      />
                     </div>
 
                     {/* allow to copy and save when asciiArt is not empty */}
                     {asciiArt && (
-                      <div className="mt-2">
-                        <button onClick={handleCopy} className={buttonStyle}>
-                          Copy
-                        </button>
-                        <button
-                          onClick={downloadAscii}
-                          className={`${buttonStyle} w-35 ml-5`}
-                        >
-                          Save in .txt
-                        </button>
-                      </div>
+                      <CopyDownload asciiArt={asciiArt} refArt={refArt} />
                     )}
                   </div>
                 </div>
-                <pre className="font-mono text-xs whitespace-pre mt-10">
+                <pre
+                  className={`font-mono text-xs whitespace-pre mt-10 ${
+                    invert && "bg-zinc-200 text-black"
+                  }`}
+                  ref={refArt}
+                >
                   {asciiArt}
                 </pre>
               </div>
@@ -334,3 +318,8 @@ export default function ImageConverter() {
     </div>
   );
 }
+
+//show colors
+//add more styles ✅
+//invert colors ✅
+//download all styles in html

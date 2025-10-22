@@ -1,7 +1,7 @@
 //components
 import Header from "../components/header";
 import shark from "../assciText/shark.txt?raw";
-import { useLocalStorage } from "../components/useLocalStorage";
+import { useLocalStorage } from "../components/functions/useLocalStorage";
 //animations and styles
 import DecryptedText from "../animation/DecryptedTextProps";
 import { motion } from "motion/react";

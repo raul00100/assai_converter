@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 //components
 import Header from "../components/header";
 import { useLocalStorage } from "../components/functions/useLocalStorage";
@@ -32,7 +32,7 @@ const {
   selectContentStyle,
 } = generalStyles;
 const settingRow =
-  "flex flex-row gap-15 border-b-1 border-green-400 pb-5 w-124";
+  "flex flex-row gap-15 border-b-1 border-green-400 pb-6 w-124.5";
 
 export default function ImageConverter() {
   const [showImage, setShowImage] = useLocalStorage("showImage", false);
@@ -40,14 +40,11 @@ export default function ImageConverter() {
   const [chars, setChars] = useState("@%#*+=-:. ");
   const [artSize, setaArtSize] = useState(80);
   const [invert, setInvert] = useState(false);
+  const [colored, setColored] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgSize = useRef({ width: 0, height: 0, x: 0, y: 0 });
   const refArt = useRef<HTMLPreElement>(null);
-
-  useEffect(() => {
-    setAsciiArt(generateAscii(artSize));
-  }, [chars, artSize]);
 
   const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,8 +60,8 @@ export default function ImageConverter() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      const maxCanvasWidth = 230;
-      const maxCanvasHeight = 190;
+      const maxCanvasWidth = 250;
+      const maxCanvasHeight = 205;
       canvas.width = maxCanvasWidth;
       canvas.height = maxCanvasHeight;
 
@@ -86,67 +83,80 @@ export default function ImageConverter() {
 
       ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
 
-      setAsciiArt(generateAscii(artSize));
+      setAsciiArt(generateAscii(artSize, colored));
     };
   };
 
-  // Convert brightness (0-255) to ASCII number of character
-  const getAsciiChar = (brightness: number) => {
-    const index = Math.floor((brightness / 255) * (chars.length - 1));
-    return chars[index];
-  };
-
   // Generate ASCII art with canvas
-  const generateAscii = (asciiWidth: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return "";
+  const generateAscii = useCallback(
+    (asciiWidth: number, colored: boolean) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return "";
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return "";
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return "";
 
-    const { data, width: canvasWidth } = ctx.getImageData(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+      const { data, width: canvasWidth } = ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
-    const {
-      width: imgWidth,
-      height: imgHeight,
-      x: xOffset,
-      y: yOffset,
-    } = imgSize.current;
+      const {
+        width: imgWidth,
+        height: imgHeight,
+        x: xOffset,
+        y: yOffset,
+      } = imgSize.current;
 
-    // Aspect ratio correction: characters taller than wide
-    const asciiHeight = Math.floor((imgHeight / imgWidth) * asciiWidth * 0.5);
+      // Convert brightness (0-255) to ASCII number of character
+      const getAsciiChar = (brightness: number) => {
+        const index = Math.floor((brightness / 255) * (chars.length - 1));
+        return chars[index];
+      };
 
-    const xRatio = imgWidth / asciiWidth;
-    const yRatio = imgHeight / asciiHeight;
+      // Aspect ratio correction: characters taller than wide
+      const asciiHeight = Math.floor((imgHeight / imgWidth) * asciiWidth * 0.5);
 
-    let asciiImage = "";
+      const xRatio = imgWidth / asciiWidth;
+      const yRatio = imgHeight / asciiHeight;
 
-    // Loop through pixels with step to prevent characters from overlapping
-    for (let y = 0; y < asciiHeight; y++) {
-      for (let x = 0; x < asciiWidth; x++) {
-        const px = Math.floor(xOffset + x * xRatio);
-        const py = Math.floor(yOffset + y * yRatio);
-        const index = (py * canvasWidth + px) * 4;
+      let asciiImage = "";
 
-        const r = data[index];
-        const g = data[index + 1];
-        const b = data[index + 2];
+      // Loop through pixels with step to prevent characters from overlapping
+      for (let y = 0; y < asciiHeight; y++) {
+        for (let x = 0; x < asciiWidth; x++) {
+          const px = Math.floor(xOffset + x * xRatio);
+          const py = Math.floor(yOffset + y * yRatio);
+          const index = (py * canvasWidth + px) * 4;
 
-        // Calculate brightness using human eye perception formula
-        const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+          const r = data[index];
+          const g = data[index + 1];
+          const b = data[index + 2];
 
-        asciiImage += getAsciiChar(brightness);
+          // Calculate brightness using human eye perception formula
+          const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+          const char = getAsciiChar(brightness);
+
+          // asciiImage += getAsciiChar(brightness);
+          if (colored) {
+            asciiImage += `<span style="color: rgb(${r}, ${g}, ${b})">${char}</span>`;
+          } else {
+            asciiImage += char;
+          }
+        }
+        asciiImage += "\n"; //new line after each row
       }
-      asciiImage += "\n"; //new line after each row
-    }
 
-    return asciiImage;
-  };
+      return asciiImage;
+    },
+    [chars]
+  );
+
+  useEffect(() => {
+    setAsciiArt(generateAscii(artSize, colored));
+  }, [chars, artSize, colored, generateAscii]);
 
   return (
     <div>
@@ -192,12 +202,12 @@ export default function ImageConverter() {
                 {/* panel with image upload and other settings */}
                 <div className="flex flex-row">
                   {/* image upload input */}
-                  <div className="flex flex-col w-[250px] h-[250px] border-1 border-green-400 gap-1.5 mr-20 items-center p-1.5">
-                    <div className="w-59 h-100 border-1 border-green-400 border-dashed items-center flex justify-center">
+                  <div className="flex flex-col w-[265px] h-[265px] border-1 border-green-400 gap-1.5 mr-20 items-center p-1.5">
+                    <div className="w-full h-100 border-1 border-green-400 border-dashed items-center flex justify-center">
                       <canvas ref={canvasRef} />
                     </div>
 
-                    <label className="border border-green-400 w-[238px] h-10 flex items-center justify-center p-2 cursor-pointer gap-2 text-sm hover:bg-green-400 hover:text-black">
+                    <label className="border border-green-400 w-full h-10 flex items-center justify-center p-2 cursor-pointer gap-2 text-sm hover:bg-green-400 hover:text-black">
                       Upload an image
                       <input
                         type="file"
@@ -214,7 +224,7 @@ export default function ImageConverter() {
                     <div className={settingRow}>
                       <div>
                         <label>Characters:</label>
-                        <div className="flex flex-row items-center gap-1.5 w-[218px] mt-1.5">
+                        <div className="flex flex-row items-center gap-3 w-[218px] mt-1.5">
                           <Slider
                             min={30}
                             max={170}
@@ -272,6 +282,7 @@ export default function ImageConverter() {
                       </div>
                     </div>
 
+                    {/* 2 row  */}
                     <div className={settingRow}>
                       <FormControlLabel
                         control={
@@ -294,6 +305,27 @@ export default function ImageConverter() {
                         }
                         label="Invert colors"
                       />
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: "#4ade80", //🟢
+                              },
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: "#4ade80", //checked track
+                                },
+                              "& .MuiSwitch-track": {
+                                backgroundColor: "#9ca3af", // unchecked track
+                              },
+                            }}
+                            value={colored}
+                            onChange={() => setColored((s) => !s)}
+                          />
+                        }
+                        label="Use original colors"
+                      />
                     </div>
 
                     {/* allow to copy and save when asciiArt is not empty */}
@@ -302,14 +334,28 @@ export default function ImageConverter() {
                     )}
                   </div>
                 </div>
-                <pre
-                  className={`font-mono text-xs whitespace-pre mt-10 ${
-                    invert && "bg-zinc-200 text-black"
-                  }`}
-                  ref={refArt}
+                <div
+                  style={{
+                    backgroundColor: invert ? "white" : "black",
+                  }}
                 >
-                  {asciiArt}
-                </pre>
+                  {/* dangerouslySetInnerHTML is safe here because the data is generated by your own code, not entered by the user */}
+                  <pre
+                    className={`mt-10`}
+                    ref={refArt}
+                    dangerouslySetInnerHTML={{ __html: asciiArt }}
+                    style={{
+                      color: colored
+                        ? "rgb(255,0,0)"
+                        : invert
+                        ? "black"
+                        : "white",
+                      fontFamily: "monospace",
+                      fontSize: "12px",
+                      whiteSpace: "pre",
+                    }}
+                  />
+                </div>
               </div>
             </motion.div>
           )}
@@ -318,8 +364,3 @@ export default function ImageConverter() {
     </div>
   );
 }
-
-//show colors
-//add more styles ✅
-//invert colors ✅
-//download all styles in html

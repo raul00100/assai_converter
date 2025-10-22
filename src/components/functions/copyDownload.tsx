@@ -40,8 +40,18 @@ export default function CopyDownload({
     URL.revokeObjectURL(url);
   };
   const downloadHtml = (element: HTMLElement) => {
-    const pre = element.outerHTML;
-    const blob = new Blob([pre], { type: "text/html;charset=utf-8" });
+    const htmlContent = `
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>ASCII Art</title>
+    </head>
+    <body>
+      <pre>${element.innerHTML}</pre>
+    </body>
+  </html>
+  `;
+    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
@@ -58,10 +68,9 @@ export default function CopyDownload({
     <div>
       <button
         onClick={() => {
-          if (ascii && asciiArt)
-            if (location.pathname === "/text") {
-              handleCopy(ascii);
-            } else handleCopy(asciiArt);
+          if (location.pathname === "/text" && ascii) {
+            handleCopy(ascii);
+          } else if (asciiArt) handleCopy(asciiArt);
         }}
         className={`${buttonStyle} mr-[40px]`}
       >
@@ -70,10 +79,9 @@ export default function CopyDownload({
 
       <button
         onClick={() => {
-          if (ascii && asciiArt)
-            if (location.pathname === "/text") {
-              downloadTxt(ascii);
-            } else downloadTxt(asciiArt);
+          if (location.pathname === "/text" && ascii) {
+            downloadTxt(ascii);
+          } else if (asciiArt) downloadTxt(asciiArt);
         }}
         className={`${buttonStyle} mr-[40px]`}
       >
@@ -82,12 +90,11 @@ export default function CopyDownload({
 
       <button
         onClick={() => {
-          if (refText && refArt)
-            if (location.pathname === "/text" && refText?.current) {
-              downloadHtml(refText.current);
-            } else if (refArt?.current) {
-              downloadHtml(refArt.current);
-            }
+          if (location.pathname === "/text" && refText?.current) {
+            downloadHtml(refText.current);
+          } else if (refArt?.current) {
+            downloadHtml(refArt.current);
+          }
         }}
         className={`${buttonStyle}`}
       >

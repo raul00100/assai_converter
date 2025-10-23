@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocalStorage } from "../components/functions/useLocalStorage";
 //components
 import {
   Select,
@@ -10,13 +9,15 @@ import {
 } from "../components/select";
 import Header from "../components/header";
 import CopyDownload from "@/components/functions/copyDownload";
+import { sizes } from "@/components/symbols/fontSettings";
+import { useLocalStorage } from "../components/functions/useLocalStorage";
 //animations and styles
 import TextType from "../animation/TextType";
 import DecryptedText from "../animation/DecryptedTextProps";
 import generalStyles from "@/components/styleExport";
 import { motion } from "motion/react";
 //libraries for customization
-import figlet, { availableFonts } from "../components/symbols/asciiFonts";
+import figlet, { availableFonts } from "../components/symbols/fontSettings";
 import { HexColorPicker } from "react-colorful";
 //icons
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -37,10 +38,9 @@ export default function TextConverter() {
   const [input, setInput] = useLocalStorage("input", "QWERTY");
   const [ascii, setAscii] = useState("");
   const [font, setFont] = useLocalStorage("font", "Standard");
-  const [color, setColor] = useLocalStorage("color", "#00ff00");
+  const [textColor, setTextColor] = useLocalStorage("color", "#00ff00");
   const [showColors, setShowColors] = useState(false);
-  const sizes = ["text-xs", "text-sm", "text-base", "text-lg", "text-xl"];
-  const [textSize, setTextSize] = useLocalStorage("textSize", "text-base");
+  const [textSize, setTextSize] = useLocalStorage("textSize", "16px");
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const refText = useRef<HTMLPreElement>(null);
@@ -73,15 +73,14 @@ export default function TextConverter() {
               transition={{ duration: 0.5 }}
             >
               <div className="flex flex-col gap-5 text-sm">
-                <DecryptedText text="On this page, you can convert your text into ascii style with different types of fonts and setting options." />
-                <DecryptedText text="Just try it yourself!" />
+                <DecryptedText text="On this page, you can convert your text into ascii style with different types of fonts and setting options!" />
               </div>
             </motion.div>
           ) : (
             <div>
               <TextType
                 text={[
-                  `On this page, you can convert your text into ascii style with different types of fonts and setting options\n\nJust try it yourself!`,
+                  `On this page, you can convert your text into ascii style with different types of fonts and setting options!`,
                 ]}
                 typingSpeed={15}
                 showCursor={true}
@@ -151,11 +150,11 @@ export default function TextConverter() {
                         <SelectContent className={selectContentStyle}>
                           {sizes.map((s) => (
                             <SelectItem
-                              key={s}
-                              value={s}
+                              key={s.name}
+                              value={s.size}
                               className={selectItemStyle}
                             >
-                              {s}
+                              {s.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -180,10 +179,10 @@ export default function TextConverter() {
 
                         {showColors && (
                           <div className="absolute left-0 top-full mt-1 z-50">
-                            <div className="p-2 rounded-none border-1 border-green-400">
+                            <div className="p-2 rounded-none border-1 border-green-400 bg-black">
                               <HexColorPicker
-                                color={color}
-                                onChange={setColor}
+                                color={textColor}
+                                onChange={setTextColor}
                               />
                             </div>
                           </div>
@@ -196,7 +195,12 @@ export default function TextConverter() {
                   {/* allow copy when input is not empty  */}
                   {input !== "" ? (
                     <div className="h-[80px] flex items-center">
-                      <CopyDownload ascii={ascii} refText={refText} />
+                      <CopyDownload
+                        ascii={ascii}
+                        refText={refText}
+                        textColor={textColor}
+                        textSize={textSize}
+                      />
                     </div>
                   ) : (
                     <div className="h-[80px] w-20" />
@@ -206,8 +210,8 @@ export default function TextConverter() {
                 {/* limit width parameter to make ascii scrollable */}
                 <div className="mt-5 w-full max-w-[1300px] h-[300px] flex items-center overflow-auto">
                   <pre
-                    className={`${textSize} font-mono whitespace-pre`}
-                    style={{ color }}
+                    className={`font-mono whitespace-pre`}
+                    style={{ color: textColor, fontSize: textSize }}
                     ref={refText}
                   >
                     {ascii}

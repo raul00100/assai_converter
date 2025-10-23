@@ -1,5 +1,4 @@
 import figlet from "figlet";
-
 // importing fonts form figlet package
 import Standard from "figlet/importable-fonts/Standard.js";
 import Ghost from "figlet/importable-fonts/Ghost.js";
@@ -30,5 +29,27 @@ export const availableFonts = [
   "Mini",
   "Script",
 ];
-
 export default figlet;
+
+export const sizes = [
+  {
+    name: "text-xs",
+    size: "12px",
+  },
+  {
+    name: "text-sm",
+    size: "14px",
+  },
+  {
+    name: "text-base",
+    size: "16px",
+  },
+  {
+    name: "text-lg",
+    size: "18px",
+  },
+  {
+    name: "text-xl",
+    size: "20px",
+  },
+];

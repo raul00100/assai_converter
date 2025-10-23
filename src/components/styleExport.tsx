@@ -1,6 +1,6 @@
 const generalStyles = {
   terminal:
-    "bg-black border-1 border-zinc-500 text-white w-[1300px] min-h-[100px] max-h-[2500px] font-mono flex flex-col my-10 mx-auto pb-5",
+    "bg-black border-1 border-zinc-500 text-white w-[1300px] min-h-[100px] max-h-[3000px] font-mono flex flex-col my-10 mx-auto pb-5",
   terminalLabel: "flex items-center m-3 bg-white text-black pl-3",
   field:
     "w-40 h-[44px] border-1 border-green-400 focus:border-2 p-2 outline-none mr-5",

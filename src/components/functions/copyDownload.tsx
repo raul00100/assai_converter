@@ -8,6 +8,10 @@ type Props = {
   asciiArt?: string;
   refText?: React.RefObject<HTMLPreElement | null>;
   refArt?: React.RefObject<HTMLPreElement | null>;
+  invert?: boolean;
+  colored?: boolean;
+  textColor?: string;
+  textSize?: string;
 };
 
 export default function CopyDownload({
@@ -15,6 +19,10 @@ export default function CopyDownload({
   asciiArt,
   refText,
   refArt,
+  invert,
+  colored,
+  textColor,
+  textSize,
 }: Props) {
   const location = useLocation();
 
@@ -40,27 +48,69 @@ export default function CopyDownload({
     URL.revokeObjectURL(url);
   };
   const downloadHtml = (element: HTMLElement) => {
-    const htmlContent = `
-  <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>ASCII Art</title>
-    </head>
-    <body>
-      <pre>${element.innerHTML}</pre>
-    </body>
-  </html>
-  `;
-    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+    // for a text page
+    if (location.pathname === "/text") {
+      const preText = `
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ASCII Art</title>
+    <style>
+      body {
+        background-color: black;
+        color: ${textColor || "#000000"};
+      }
+      pre {
+        font-family: monospace;
+        font-size: ${textSize};
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <pre>${ascii || ""}</pre>
+  </body>
+</html>
+`;
+      const blob = new Blob([preText], { type: "text/html;charset=utf-8" });
+      downloadBlob(blob);
+    }
+    // for an image page
+    else {
+      const preArt = `
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ASCII Art</title>
+    <style>
+      body {
+        background-color: ${invert ? "white" : "black"};
+        color: ${colored ? "inherit" : invert ? "black" : "white"};
+      }
+      pre {
+        font-family: monospace;
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <pre>${element.innerHTML}</pre>
+  </body>
+</html>
+`;
+      const blob = new Blob([preArt], { type: "text/html;charset=utf-8" });
+      downloadBlob(blob);
+    }
+  };
 
+  const downloadBlob = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "ascii-art.html";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
     URL.revokeObjectURL(url);
   };
 

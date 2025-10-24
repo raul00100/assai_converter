@@ -3,7 +3,6 @@ import Home from "./pages/home";
 import TextConverter from "./pages/textConverter";
 import ImageConverter from "./pages/imageConverter";
 import VideoConverter from "./pages/videoConverter";
-
 export default function App() {
   const router = createBrowserRouter([
     {

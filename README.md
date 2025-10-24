@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# ASCII Converter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application built with **React**, **TypeScript**, and **Vite** that converts both **text** and **images** into beautiful ASCII art.
 
-Currently, two official plugins are available:
+## 🖋️ Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This application can convert not only text but also images into ASCII art style, while enhancing the result with various filters — including color and size adjustments.
 
-## React Compiler
+You can also use different sets of characters for the conversion to achieve unique visual effects.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+After the conversion is complete, the result can be saved to your device — you can copy it, save it as a plain text file, or export it as an HTML file that preserves all applied styles. This makes it easy to reuse the generated ASCII art in your own projects.
 
-## Expanding the ESLint configuration
+## ⚙️ Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Text → ASCII conversion
+- Image → ASCII art conversion
+- Adjustable color, font size, and filters
+- Multiple character sets for custom styles
+- Export options:
+  - Copy to clipboard
+  - Save as `.txt`
+  - Save as `.html` (with preserved styles)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Responsive UI with component libraries
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🧠 Technologies Used
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **React** + **TypeScript** + **Vite**
+- **Tailwind CSS** – for styling
+- **Canvas API** – for image-to-ASCII conversion
+- **Figlet** – for text ASCII rendering
+- **shadcn/ui** and **Material UI** – for UI components
+- **ESLint** and **Prettier** – for code formatting and linting
+
+## 🚀 Installation and Setup
+
+```bash
+# clone the repository
+git clone https://github.com/raul00100/ascii_converter.git
+cd ascii_converter
+
+# install dependencies
+npm install
+
+# run in development mode
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+For production build:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run build
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🖼️ Example
+
+ASCII text:
+
+```
+ _   _      _ _
+| | | | ___| | | ___
+| |_| |/ _ \ | |/ _ \
+|  _  |  __/ | | (_) |
+|_| |_|\___|_|_|\___/
 ```

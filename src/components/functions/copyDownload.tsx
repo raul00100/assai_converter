@@ -115,14 +115,14 @@ export default function CopyDownload({
   };
 
   return (
-    <div>
+    <div className="flex flex-row">
       <button
         onClick={() => {
           if (location.pathname === "/text" && ascii) {
             handleCopy(ascii);
           } else if (asciiArt) handleCopy(asciiArt);
         }}
-        className={`${buttonStyle} mr-[40px]`}
+        className={`${buttonStyle} lg:mr-[40px]`}
       >
         Copy
       </button>
@@ -133,9 +133,9 @@ export default function CopyDownload({
             downloadTxt(ascii);
           } else if (asciiArt) downloadTxt(asciiArt);
         }}
-        className={`${buttonStyle} mr-[40px]`}
+        className={`${buttonStyle} lg:mr-[40px]`}
       >
-        Save in .txt
+        Save .txt
       </button>
 
       <button
@@ -148,7 +148,7 @@ export default function CopyDownload({
         }}
         className={`${buttonStyle}`}
       >
-        Save in .html
+        Save .html
       </button>
     </div>
   );

@@ -1,9 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/home";
-import TextConverter from "./pages/textConverter";
+import TextConverter from "./pages/TextConvertor";
 import ImageConverter from "./pages/imageConverter";
-import VideoConverter from "./pages/videoConverter";
-import NotFound from "@/components/notFound";
+import NotFound from "./pages/notFound";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -18,10 +17,6 @@ export default function App() {
     {
       path: "/image",
       element: <ImageConverter />,
-    },
-    {
-      path: "/video",
-      element: <VideoConverter />,
     },
     {
       path: "*",

@@ -9,7 +9,7 @@ import generalStyles from "@/components/styleExport";
 import { motion } from "motion/react";
 import figlet from "@/components/styleSelection/fontSettings";
 
-const { terminal, terminalLabel } = generalStyles;
+const { terminal, terminalLabel, innerContainer } = generalStyles;
 
 export default function TextConverter() {
   const [showText, setShowText] = useLocalStorage("showText", false);
@@ -42,7 +42,7 @@ export default function TextConverter() {
         <div className={terminalLabel}>
           <p> UW PICO 5.09 </p>
         </div>
-        <div className="px-5 pb-5">
+        <div className={innerContainer}>
           <Description showText={showText} setShowText={setShowText} />
           {/* if user is new we show the entire content after the text type animation */}
           {showText && (

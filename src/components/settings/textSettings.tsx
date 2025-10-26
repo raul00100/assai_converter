@@ -39,7 +39,10 @@ const {
   selectItemStyle,
   selectTriggerStyle,
   selectContentStyle,
+  settingsContainer,
+  canvasContainer,
 } = generalStyles;
+const labelStyle = "lg:text-base text-sm";
 
 export default function TextSettings({
   input,
@@ -57,13 +60,13 @@ export default function TextSettings({
   refText,
 }: TextSettingsProp) {
   return (
-    <div className="whitespace-pre font-mono flex flex-col mt-15 items-start w-full ">
+    <div className={settingsContainer}>
       {/* settings and save options */}
-      <div>
+      <div className="mx-auto">
         {/* setting options */}
-        <div className="flex flex-row gap-5">
+        <div className="flex lg:flex-row flex-col gap-5">
           <div className={fieldCont}>
-            <label>Type here:</label>
+            <label className={labelStyle}>Type here:</label>
             <textarea
               ref={inputRef}
               value={input}
@@ -73,44 +76,46 @@ export default function TextSettings({
             />
           </div>
 
-          <div className={fieldCont}>
-            <label>Choose font:</label>
-            <Select value={font} onValueChange={setFont}>
-              <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
-                <SelectValue placeholder="Theme" className="outline-none" />
-              </SelectTrigger>
-              <SelectContent className={selectContentStyle}>
-                {availableFonts.map((f) => (
-                  <SelectItem key={f} value={f} className={selectItemStyle}>
-                    {f}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-row lg:gap-4 gap-2">
+            <div className={fieldCont}>
+              <label className={labelStyle}>Choose font:</label>
+              <Select value={font} onValueChange={setFont}>
+                <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
+                  <SelectValue placeholder="Theme" className="outline-none" />
+                </SelectTrigger>
+                <SelectContent className={selectContentStyle}>
+                  {availableFonts.map((f) => (
+                    <SelectItem key={f} value={f} className={selectItemStyle}>
+                      {f}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className={fieldCont}>
+              <label className={labelStyle}>Choose text size:</label>
+              <Select value={textSize} onValueChange={setTextSize}>
+                <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
+                  <SelectValue className="outline-none" />
+                </SelectTrigger>
+                <SelectContent className={selectContentStyle}>
+                  {sizes.map((s) => (
+                    <SelectItem
+                      key={s.name}
+                      value={s.size}
+                      className={selectItemStyle}
+                    >
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className={fieldCont}>
-            <label>Choose text size:</label>
-            <Select value={textSize} onValueChange={setTextSize}>
-              <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
-                <SelectValue className="outline-none" />
-              </SelectTrigger>
-              <SelectContent className={selectContentStyle}>
-                {sizes.map((s) => (
-                  <SelectItem
-                    key={s.name}
-                    value={s.size}
-                    className={selectItemStyle}
-                  >
-                    {s.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className={fieldCont}>
-            <label>Choose Color:</label>
+            <label className={labelStyle}>Choose Color:</label>
             <div className="relative">
               <div
                 className={`${field} w-[218px] flex items-center justify-center cursor-pointer`}
@@ -138,8 +143,8 @@ export default function TextSettings({
 
         {/* copy and save  */}
         {/* allow copy when input is not empty  */}
-        {input !== "" ? (
-          <div className="h-[80px] flex items-center">
+        {input.trim() !== "" && (
+          <div className="lg:h-[80px] h-[50px] lg:flex lg:items-center mt-10 lg:mt-0 flex justify-center">
             <CopyDownload
               ascii={ascii}
               refText={refText}
@@ -147,18 +152,12 @@ export default function TextSettings({
               textSize={textSize}
             />
           </div>
-        ) : (
-          <div className="h-[80px] w-20" />
         )}
       </div>
 
       {/* limit width parameter to make ascii scrollable */}
-      <div className="mt-5 w-full max-w-[1300px] h-[300px] flex items-center overflow-auto">
-        <pre
-          className={`font-mono whitespace-pre`}
-          style={{ color: textColor, fontSize: textSize }}
-          ref={refText}
-        >
+      <div className={`${canvasContainer} mt-5 `}>
+        <pre style={{ color: textColor, fontSize: textSize }} ref={refText}>
           {ascii}
         </pre>
       </div>

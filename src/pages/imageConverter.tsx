@@ -9,7 +9,7 @@ import generalStyles from "@/components/styleExport";
 import { motion } from "motion/react";
 import "rc-slider/assets/index.css";
 
-const { terminal, terminalLabel } = generalStyles;
+const { terminal, terminalLabel, innerContainer } = generalStyles;
 
 export default function ImageConverter() {
   const [showImage, setShowImage] = useLocalStorage("showImage", false);
@@ -37,7 +37,7 @@ export default function ImageConverter() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      const maxCanvasWidth = 250;
+      const maxCanvasWidth = 240;
       const maxCanvasHeight = 205;
       canvas.width = maxCanvasWidth;
       canvas.height = maxCanvasHeight;
@@ -123,7 +123,8 @@ export default function ImageConverter() {
             asciiImage += char;
           }
         }
-        asciiImage += "\n"; //new line after each row
+
+        asciiImage += colored ? "<br/>" : "\n";
       }
 
       return asciiImage;
@@ -142,7 +143,7 @@ export default function ImageConverter() {
         <div className={terminalLabel}>
           <p> UW PICO 5.09 </p>
         </div>
-        <div className="px-5">
+        <div className={innerContainer}>
           <Description showImage={showImage} setShowImage={setShowImage} />
           {/* if user is new we show the entire content after the text type animation */}
           {showImage && (

@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 import generalStyles from "@/components/styleExport";
 import Description from "@/components/description";
 
-const { terminal, terminalLabel } = generalStyles;
+const { terminal, terminalLabel, innerContainer } = generalStyles;
 
 export default function Home() {
   const [showHome, setShowHome] = useLocalStorage("shoShark", false);
@@ -18,12 +18,12 @@ export default function Home() {
         <div className={terminalLabel}>
           <p> UW PICO 5.09 </p>
         </div>
-        <div className="px-5">
+        <div className={innerContainer}>
           <Description showHome={showHome} setShowHome={setShowHome} />
 
           {showHome && (
             <motion.pre
-              className="scale-70 text-xs"
+              className="lg:scale-70 lg:text-xs text-[4.5px] lg:mt-0 mt-15 flex justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 2 }}

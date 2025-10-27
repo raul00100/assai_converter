@@ -118,7 +118,7 @@ export default function ImageSettings({
             </div>
 
             <div className={fieldCont}>
-              <label>Choose style:</label>
+              <label>Style:</label>
               <Select value={chars} onValueChange={setChars}>
                 <SelectTrigger
                   className={`${selectTriggerStyle} ${field} w-[218px]`}

@@ -78,7 +78,7 @@ export default function TextSettings({
 
           <div className="flex flex-row lg:gap-4 gap-2">
             <div className={fieldCont}>
-              <label className={labelStyle}>Choose font:</label>
+              <label className={labelStyle}>Font:</label>
               <Select value={font} onValueChange={setFont}>
                 <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
                   <SelectValue placeholder="Theme" className="outline-none" />
@@ -94,7 +94,7 @@ export default function TextSettings({
             </div>
 
             <div className={fieldCont}>
-              <label className={labelStyle}>Choose text size:</label>
+              <label className={labelStyle}>Text size:</label>
               <Select value={textSize} onValueChange={setTextSize}>
                 <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
                   <SelectValue className="outline-none" />
@@ -115,7 +115,7 @@ export default function TextSettings({
           </div>
 
           <div className={fieldCont}>
-            <label className={labelStyle}>Choose Color:</label>
+            <label className={labelStyle}>Color:</label>
             <div className="relative">
               <div
                 className={`${field} w-[218px] flex items-center justify-center cursor-pointer`}

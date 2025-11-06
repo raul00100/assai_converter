@@ -4,6 +4,7 @@ import image from "../assciText/image.txt?raw";
 import { useLocation } from "react-router-dom";
 import arrow from "../assciText/arrow.txt?raw";
 import { Link } from "react-router-dom";
+import video from "../assciText/video.txt?raw";
 
 const arrowStyle = "lg:text-[7px] text-[4px] text-green-400 cursor-pointer";
 
@@ -13,6 +14,7 @@ export default function Header() {
     { path: "/", element: home },
     { path: "/text", element: text },
     { path: "/image", element: image },
+    { path: "/video", element: video },
   ];
 
   const nextPageMap: Record<string, string> = {
@@ -49,7 +51,7 @@ export default function Header() {
             </pre>
           )
       )}
-      {location.pathname !== "/image" ? (
+      {location.pathname !== "/video" ? (
         <Link to={nextPageMap[location.pathname] ?? "/"}>
           <pre className={`${arrowStyle}`}> {arrow} </pre>
         </Link>

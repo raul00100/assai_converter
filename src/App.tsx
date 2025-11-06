@@ -3,6 +3,7 @@ import Home from "./pages/home";
 import TextConverter from "./pages/TextConvertor";
 import ImageConverter from "./pages/imageConverter";
 import NotFound from "./pages/notFound";
+import VideoConverter from "./pages/VideoConverter";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -21,6 +22,10 @@ export default function App() {
     {
       path: "*",
       element: <NotFound />,
+    },
+    {
+      path: "/video",
+      element: <VideoConverter />,
     },
   ]);
 

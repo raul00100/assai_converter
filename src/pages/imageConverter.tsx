@@ -4,6 +4,7 @@ import Header from "../components/header";
 import { useLocalStorage } from "../components/functions/useLocalStorage";
 import Description from "@/components/description";
 import ImageSettings from "@/components/settings/imageSettings";
+import useWarning from "@/components/warning";
 ///animations and styles
 import generalStyles from "@/components/styleExport";
 import { motion } from "motion/react";
@@ -14,14 +15,17 @@ const { terminal, terminalLabel, innerContainer } = generalStyles;
 export default function ImageConverter() {
   const [showImage, setShowImage] = useLocalStorage("showImage", false);
   const [asciiArt, setAsciiArt] = useState("");
-  const [chars, setChars] = useState("@%#*+=-:. ");
-  const [artSize, setArtSize] = useState(80);
+  const [chars, setChars] = useLocalStorage("charsImg", "@%#*+=-:. ");
+  const [artSize, setArtSize] = useLocalStorage("artSizeImg", 80);
   const [invert, setInvert] = useState(false);
   const [colored, setColored] = useState(false);
+  const [unsavedData, setUnsavedData] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgSize = useRef({ width: 0, height: 0, x: 0, y: 0 });
   const refArt = useRef<HTMLPreElement>(null);
+
+  useWarning(unsavedData);
 
   const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,9 +66,9 @@ export default function ImageConverter() {
 
       setAsciiArt(generateAscii(artSize, colored));
     };
+    setUnsavedData(true);
   };
 
-  // Generate ASCII art with canvas
   const generateAscii = useCallback(
     (asciiWidth: number, colored: boolean) => {
       const canvas = canvasRef.current;
@@ -137,7 +141,7 @@ export default function ImageConverter() {
   }, [chars, artSize, colored, generateAscii]);
 
   return (
-    <div>
+    <div onClick={() => setShowImage(true)}>
       <Header />
       <div className={terminal}>
         <div className={terminalLabel}>

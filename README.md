@@ -1,6 +1,6 @@
 # 🎨 ASCII Converter
 
-A modern web application that converts both **text and images into ASCII art**.
+A modern web application that converts **text, images and video into ASCII art**.
 Users can apply various filters such as **color adjustments**, **font size**, and **custom character sets** to achieve unique visual effects.
 
 Once the conversion is complete, the result can be **saved, copied, or exported** as a `.txt` or `.html` file (with preserved styles), making it easy to reuse the generated ASCII art in other projects.
@@ -11,6 +11,7 @@ Once the conversion is complete, the result can be **saved, copied, or exported*
 
 - 📝 **Text → ASCII** conversion
 - 🖼️ **Image → ASCII art** conversion
+- 🎥 **Video → ASCII art** conversion
 - 🎨 Adjustable **color**, **font size**, and **character sets**
 - 💾 Export options:
   - Copy to clipboard

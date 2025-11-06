@@ -3,6 +3,7 @@ import DecryptedText from "@/animation/DecryptedTextProps";
 import { useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import type { SetStateAction } from "react";
+import type React from "react";
 
 type DescriptionProp = {
   showHome?: boolean;
@@ -11,6 +12,8 @@ type DescriptionProp = {
   setShowText?: React.Dispatch<SetStateAction<boolean>>;
   showImage?: boolean;
   setShowImage?: React.Dispatch<SetStateAction<boolean>>;
+  showVideo?: boolean;
+  setShowVideo?: React.Dispatch<SetStateAction<boolean>>;
 };
 
 export default function Description({
@@ -20,6 +23,8 @@ export default function Description({
   setShowText,
   showImage,
   setShowImage,
+  showVideo,
+  setShowVideo,
 }: DescriptionProp) {
   const location = useLocation();
 
@@ -103,6 +108,32 @@ export default function Description({
               showCursor={true}
               cursorCharacter="|"
               onComplete={() => setShowImage?.(true)}
+              className="text-sm"
+            />
+          )}
+        </div>
+      )}
+      {location.pathname === "/video" && (
+        <div>
+          {showVideo ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex flex-col gap-5 text-sm">
+                <DecryptedText text="On this page, you can upload a video, convert it to ASCII format, and apply various filters!" />
+              </div>
+            </motion.div>
+          ) : (
+            <TextType
+              text={[
+                `On this page, you can upload a video, convert it to ASCII format, and apply various filters!`,
+              ]}
+              typingSpeed={15}
+              showCursor={true}
+              cursorCharacter="|"
+              onComplete={() => setShowVideo?.(true)}
               className="text-sm"
             />
           )}

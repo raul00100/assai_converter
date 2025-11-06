@@ -14,9 +14,9 @@ const { terminal, terminalLabel, innerContainer } = generalStyles;
 export default function TextConverter() {
   const [showText, setShowText] = useLocalStorage("showText", false);
   const [input, setInput] = useLocalStorage("input", "QWERTY");
-  const [ascii, setAscii] = useState("");
+  const [ascii, setAscii] = useLocalStorage("ascii", "");
   const [font, setFont] = useLocalStorage("font", "Standard");
-  const [textColor, setTextColor] = useLocalStorage("color", "#00ff00");
+  const [textColor, setTextColor] = useLocalStorage("textColor", "#00ff00");
   const [showColors, setShowColors] = useState(false);
   const [textSize, setTextSize] = useLocalStorage("textSize", "16px");
 
@@ -33,10 +33,10 @@ export default function TextConverter() {
     figlet.text(input, { font }, (err, data) => {
       if (!err && data) setAscii(data);
     });
-  }, [input, font]);
+  }, [input, font, setAscii]);
 
   return (
-    <div>
+    <div onClick={() => setShowText(true)}>
       <Header />
       <div className={terminal}>
         <div className={terminalLabel}>

@@ -12,7 +12,7 @@ const { terminal, terminalLabel, innerContainer } = generalStyles;
 export default function Home() {
   const [showHome, setShowHome] = useLocalStorage("shoShark", false);
   return (
-    <div>
+    <div onClick={() => setShowHome(true)}>
       <Header />
       <div className={terminal}>
         <div className={terminalLabel}>

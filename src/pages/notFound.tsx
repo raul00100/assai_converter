@@ -7,13 +7,14 @@ export default function NotFound() {
       <div className="bg-green-400 text-black p-5 flex flex-col items-center">
         <pre className="text-xs font-semibold">{error}</pre>
         <p className="font-mono text-4xl mt-10">
-          Return
+          {`-->`}
           <Link
             to="/"
             className="font-semibold cursor-pointer hover:underline ml-3"
           >
             HOME
           </Link>
+          {`<--`}
         </p>
       </div>
     </div>

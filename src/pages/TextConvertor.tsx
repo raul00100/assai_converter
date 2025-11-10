@@ -7,7 +7,7 @@ import TextSettings from "@/components/settings/textSettings";
 //animations and styles
 import generalStyles from "@/components/styleExport";
 import { motion } from "motion/react";
-import figlet from "@/components/styleSelection/fontSettings";
+import figlet from "@/components/styleSelection/fontStyle";
 
 const { terminal, terminalLabel, innerContainer } = generalStyles;
 

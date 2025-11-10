@@ -1,5 +1,5 @@
-import TextType from "@/animation/TextType";
-import DecryptedText from "@/animation/DecryptedTextProps";
+import TextType from "../animation/TextType";
+import DecryptedText from "../animation/DecryptedTextProps";
 import { useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import type { SetStateAction } from "react";

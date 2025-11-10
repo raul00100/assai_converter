@@ -6,31 +6,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../select";
-import CopyDownload from "@/components/functions/copyDownload";
-import { sizes } from "@/components/styleSelection/fontSettings";
+import CopyDownload from "../functions/copyDownload";
+import { sizes } from "../styleSelection/fontStyle";
 //animations and styles
-import generalStyles from "@/components/styleExport";
+import generalStyles from "../styleExport";
 //libraries for customization
-import { availableFonts } from "../styleSelection/fontSettings";
+import { availableFonts } from "../styleSelection/fontStyle";
 import { HexColorPicker } from "react-colorful";
 //icons
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 type TextSettingsProp = {
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  ascii: string;
-  font: string;
-  setFont: React.Dispatch<React.SetStateAction<string>>;
-  textColor: string;
-  setTextColor: React.Dispatch<React.SetStateAction<string>>;
-  showColors: boolean;
-  setShowColors: React.Dispatch<React.SetStateAction<boolean>>;
-  textSize: string;
-  setTextSize: React.Dispatch<React.SetStateAction<string>>;
-  inputRef: React.RefObject<HTMLTextAreaElement | null>;
-  refText: React.RefObject<HTMLPreElement | null>;
+  input?: string;
+  setInput?: React.Dispatch<React.SetStateAction<string>>;
+  ascii?: string;
+  font?: string;
+  setFont?: React.Dispatch<React.SetStateAction<string>>;
+  textColor?: string;
+  setTextColor?: React.Dispatch<React.SetStateAction<string>>;
+  showColors?: boolean;
+  setShowColors?: React.Dispatch<React.SetStateAction<boolean>>;
+  textSize?: string;
+  setTextSize?: React.Dispatch<React.SetStateAction<string>>;
+  inputRef?: React.RefObject<HTMLTextAreaElement | null>;
+  refText?: React.RefObject<HTMLPreElement | null>;
 };
 
 const {
@@ -68,9 +68,12 @@ export default function TextSettings({
           <div className={fieldCont}>
             <label className={labelStyle}>Type here:</label>
             <textarea
+              data-testid="text-input"
               ref={inputRef}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                if (setInput) setInput(e.target.value);
+              }}
               placeholder="..."
               className={`${field} w-[218px]`}
             />
@@ -80,7 +83,10 @@ export default function TextSettings({
             <div className={fieldCont}>
               <label className={labelStyle}>Font:</label>
               <Select value={font} onValueChange={setFont}>
-                <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
+                <SelectTrigger
+                  className={`${selectTriggerStyle} ${field}`}
+                  data-testid="font-selector"
+                >
                   <SelectValue placeholder="Theme" className="outline-none" />
                 </SelectTrigger>
                 <SelectContent className={selectContentStyle}>
@@ -96,17 +102,16 @@ export default function TextSettings({
             <div className={fieldCont}>
               <label className={labelStyle}>Text size:</label>
               <Select value={textSize} onValueChange={setTextSize}>
-                <SelectTrigger className={`${selectTriggerStyle} ${field}`}>
+                <SelectTrigger
+                  className={`${selectTriggerStyle} ${field}`}
+                  data-testid="size-selector"
+                >
                   <SelectValue className="outline-none" />
                 </SelectTrigger>
                 <SelectContent className={selectContentStyle}>
                   {sizes.map((s) => (
-                    <SelectItem
-                      key={s.name}
-                      value={s.size}
-                      className={selectItemStyle}
-                    >
-                      {s.name}
+                    <SelectItem key={s} value={s} className={selectItemStyle}>
+                      {s}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -117,23 +122,29 @@ export default function TextSettings({
           <div className={fieldCont}>
             <label className={labelStyle}>Color:</label>
             <div className="relative">
-              <div
+              <button
                 className={`${field} w-[218px] flex items-center justify-center cursor-pointer`}
-                onClick={() => setShowColors((s) => !s)}
-                role="button"
+                onClick={() => {
+                  if (setShowColors) setShowColors((s) => !s);
+                }}
                 aria-expanded={showColors}
+                data-testid="picker-toggle"
               >
                 {showColors ? (
                   <KeyboardArrowUpIcon className="scale-140" />
                 ) : (
                   <KeyboardArrowDownIcon className="scale-140" />
                 )}
-              </div>
+              </button>
 
               {showColors && (
                 <div className="absolute left-0 top-full mt-1 z-50">
                   <div className="p-2 rounded-none border-1 border-green-400 bg-black">
-                    <HexColorPicker color={textColor} onChange={setTextColor} />
+                    <HexColorPicker
+                      color={textColor}
+                      onChange={setTextColor}
+                      data-testid="color-picker"
+                    />
                   </div>
                 </div>
               )}
@@ -143,7 +154,7 @@ export default function TextSettings({
 
         {/* copy and save  */}
         {/* allow copy when input is not empty  */}
-        {input.trim() !== "" && (
+        {input?.trim() !== "" && (
           <div className="lg:h-[80px] h-[50px] lg:flex lg:items-center mt-10 lg:mt-0 flex justify-center">
             <CopyDownload
               ascii={ascii}

@@ -47,6 +47,7 @@ export default function CopyDownload({
 
     URL.revokeObjectURL(url);
   };
+
   const downloadHtml = (element: HTMLElement) => {
     // for a text page
     if (location.pathname === "/text") {
@@ -123,6 +124,7 @@ export default function CopyDownload({
           } else if (asciiArt) handleCopy(asciiArt);
         }}
         className={`${buttonStyle} lg:mr-[40px]`}
+        data-testid="copy"
       >
         Copy
       </button>
@@ -134,6 +136,7 @@ export default function CopyDownload({
           } else if (asciiArt) downloadTxt(asciiArt);
         }}
         className={`${buttonStyle} lg:mr-[40px]`}
+        data-testid="download-txt"
       >
         Save .txt
       </button>
@@ -147,6 +150,7 @@ export default function CopyDownload({
           }
         }}
         className={`${buttonStyle}`}
+        data-testid="download-html"
       >
         Save .html
       </button>

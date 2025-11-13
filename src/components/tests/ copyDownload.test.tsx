@@ -1,21 +1,18 @@
 import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { render, screen, cleanup } from "@testing-library/react";
-import CopyDownload from "../functions/copyDownload";
 import { describe, it, expect, afterEach, vi } from "vitest";
+import { renderCheck } from "./generalMock";
 import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
+import CopyDownload from "../functions/copyDownload";
 
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
 });
 
-function renderWithRouter(ui: React.ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
-}
-
-async function testFunction({ path = "/", testId = "" }) {
+async function downloadTest({ path = "/", testId = "" }) {
   const user = userEvent.setup();
 
   const createObjectURL = vi.fn(() => "blob:fake-url");
@@ -71,9 +68,7 @@ async function testFunction({ path = "/", testId = "" }) {
 
 describe("copy", () => {
   it("renders copy button", () => {
-    renderWithRouter(<CopyDownload />);
-    const button = screen.getByTestId("copy");
-    expect(button).toBeInTheDocument();
+    renderCheck({ testId: "copy", component: <CopyDownload /> });
   });
 
   it("copies ascii when on /text route", async () => {
@@ -123,32 +118,28 @@ describe("copy", () => {
 
 describe("download txt", () => {
   it("renders button", () => {
-    renderWithRouter(<CopyDownload />);
-    const button = screen.getByTestId("download-txt");
-    expect(button).toBeInTheDocument();
+    renderCheck({ testId: "download-txt", component: <CopyDownload /> });
   });
 
   it("download /text", async () => {
-    await testFunction({ path: "/text", testId: "download-txt" });
+    await downloadTest({ path: "/text", testId: "download-txt" });
   });
 
   it("download /image", async () => {
-    await testFunction({ path: "/image", testId: "download-txt" });
+    await downloadTest({ path: "/image", testId: "download-txt" });
   });
 });
 
 describe("download html", () => {
   it("renders button", () => {
-    renderWithRouter(<CopyDownload />);
-    const button = screen.getByTestId("download-html");
-    expect(button).toBeInTheDocument();
+    renderCheck({ testId: "download-html", component: <CopyDownload /> });
   });
 
   it("download /text", async () => {
-    await testFunction({ path: "/text", testId: "download-html" });
+    await downloadTest({ path: "/text", testId: "download-html" });
   });
 
   it("download /image", async () => {
-    await testFunction({ path: "/image", testId: "download-html" });
+    await downloadTest({ path: "/image", testId: "download-html" });
   });
 });

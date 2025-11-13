@@ -9,27 +9,27 @@ import {
   SelectValue,
 } from "../select";
 import { charOptions } from "../styleSelection/charOptions";
-import CopyDownload from "@/components/functions/copyDownload";
+import CopyDownload from "../functions/copyDownload";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 ///animations and styles
-import generalStyles from "@/components/styleExport";
+import generalStyles from "../styleExport";
 import "rc-slider/assets/index.css";
 import type React from "react";
 
 type ImageSettingsProp = {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  uploadImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  artSize: number;
-  setArtSize: React.Dispatch<React.SetStateAction<number>>;
-  chars: string;
-  setChars: React.Dispatch<React.SetStateAction<string>>;
-  invert: boolean;
-  setInvert: React.Dispatch<React.SetStateAction<boolean>>;
-  colored: boolean;
-  setColored: React.Dispatch<React.SetStateAction<boolean>>;
-  asciiArt: string;
-  refArt: React.RefObject<HTMLPreElement | null>;
+  canvasRef?: React.RefObject<HTMLCanvasElement | null>;
+  uploadImage?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  artSize?: number;
+  setArtSize?: React.Dispatch<React.SetStateAction<number>>;
+  chars?: string;
+  setChars?: React.Dispatch<React.SetStateAction<string>>;
+  invert?: boolean;
+  setInvert?: React.Dispatch<React.SetStateAction<boolean>>;
+  colored?: boolean;
+  setColored?: React.Dispatch<React.SetStateAction<boolean>>;
+  asciiArt?: string;
+  refArt?: React.RefObject<HTMLPreElement | null>;
 };
 
 const {
@@ -75,6 +75,7 @@ export default function ImageSettings({
               accept="image/*"
               onChange={uploadImage}
               className="hidden"
+              data-testid="input-img"
             />
             <FileUploadIcon />
           </label>
@@ -86,42 +87,49 @@ export default function ImageSettings({
             <div>
               <label>Characters:</label>
               <div className="flex flex-row items-center gap-3 w-[218px] mt-1.5">
-                <Slider
-                  min={30}
-                  max={170}
-                  value={artSize}
-                  onChange={(value) => {
-                    if (typeof value === "number") setArtSize(value);
-                  }}
-                  // active line
-                  trackStyle={{
-                    backgroundColor: "#4ade80",
-                    height: 6, //
-                  }}
-                  // slider 🟢
-                  handleStyle={{
-                    borderColor: "#4ade80",
-                    height: 15,
-                    width: 15,
-                    marginTop: -5,
-                    backgroundColor: "#000000",
-                  }}
-                  // inactive line
-                  railStyle={{
-                    backgroundColor: "#333",
-                    height: 6,
-                  }}
-                  className={`min-w-50`}
-                />
-                <p>{artSize}</p>
+                <div data-testid="image-slider">
+                  <Slider
+                    min={30}
+                    max={170}
+                    value={artSize}
+                    onChange={(value) => {
+                      if (typeof value === "number" && setArtSize)
+                        setArtSize(value);
+                    }}
+                    // active line
+                    trackStyle={{
+                      backgroundColor: "#4ade80",
+                      height: 6, //
+                    }}
+                    // slider 🟢
+                    handleStyle={{
+                      borderColor: "#4ade80",
+                      height: 15,
+                      width: 15,
+                      marginTop: -5,
+                      backgroundColor: "#000000",
+                    }}
+                    // inactive line
+                    railStyle={{
+                      backgroundColor: "#333",
+                      height: 6,
+                    }}
+                    className={`min-w-50`}
+                  />
+                </div>
+                <p>{artSize ?? 30}</p>
               </div>
             </div>
 
             <div className={fieldCont}>
               <label>Style:</label>
-              <Select value={chars} onValueChange={setChars}>
+              <Select
+                value={chars ?? ""}
+                onValueChange={setChars ?? (() => {})}
+              >
                 <SelectTrigger
                   className={`${selectTriggerStyle} ${field} w-[218px]`}
+                  data-testid="char-selector-img"
                 >
                   <SelectValue
                     placeholder="ASCII Style"
@@ -132,10 +140,10 @@ export default function ImageSettings({
                   {charOptions.map((char, idx) => (
                     <SelectItem
                       key={idx}
-                      value={char.elements}
+                      value={char.name}
                       className={selectItemStyle}
                     >
-                      {char.name} - {char.elements}
+                      {char.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -159,8 +167,9 @@ export default function ImageSettings({
                       backgroundColor: "#9ca3af", // unchecked track
                     },
                   }}
-                  value={invert}
-                  onChange={() => setInvert((s) => !s)}
+                  value={invert ?? false}
+                  onChange={() => setInvert && setInvert((s) => !s)}
+                  data-testid="invert-img"
                 />
               }
               label="Invert colors"
@@ -179,8 +188,9 @@ export default function ImageSettings({
                       backgroundColor: "#9ca3af", // unchecked track
                     },
                   }}
-                  value={colored}
-                  onChange={() => setColored((s) => !s)}
+                  value={colored ?? false}
+                  onChange={() => setColored && setColored((s) => !s)}
+                  data-testid="colored-img"
                 />
               }
               label="Use original colors"
@@ -192,8 +202,8 @@ export default function ImageSettings({
             <CopyDownload
               asciiArt={asciiArt}
               refArt={refArt}
-              invert={invert}
-              colored={colored}
+              invert={invert ?? false}
+              colored={colored ?? false}
             />
           )}
         </div>
@@ -203,7 +213,7 @@ export default function ImageSettings({
         <pre
           className={`mt-10 whitespace-pre ${invert ? "bg-zinc-300 text-black" : "bg-black text-white"} text-sm `}
           ref={refArt}
-          dangerouslySetInnerHTML={{ __html: asciiArt }}
+          dangerouslySetInnerHTML={{ __html: asciiArt ?? "" }}
         />
       </div>
     </div>

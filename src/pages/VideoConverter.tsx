@@ -15,7 +15,7 @@ export default function VideoConverter() {
   const [showVideo, setShowVideo] = useLocalStorage("showVideo", false);
   const [unsavedData, setUnsavedData] = useState(false);
   const [asciiArt, setAsciiArt] = useState("");
-  const [chars, setChars] = useLocalStorage("charsVid", "@%#*+=-:. ");
+  const [chars, setChars] = useLocalStorage("charsVid", "classChars");
   const [artSize, setArtSize] = useLocalStorage("artSizeVid", 80);
   const [colored, setColored] = useState(false);
   const [invert, setInvert] = useState(false);

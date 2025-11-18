@@ -13,12 +13,12 @@ const { terminal, terminalLabel, innerContainer } = generalStyles;
 
 export default function TextConverter() {
   const [showText, setShowText] = useLocalStorage("showText", false);
-  const [input, setInput] = useLocalStorage("input", "QWERTY");
+  const [input, setInput] = useLocalStorage("input", "qwerty");
   const [ascii, setAscii] = useLocalStorage("ascii", "");
   const [font, setFont] = useLocalStorage("font", "Standard");
   const [textColor, setTextColor] = useLocalStorage("textColor", "#00ff00");
   const [showColors, setShowColors] = useState(false);
-  const [textSize, setTextSize] = useLocalStorage("textSize", "16px");
+  const [textSize, setTextSize] = useLocalStorage("textSize", "14px");
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const refText = useRef<HTMLPreElement>(null);

@@ -13,7 +13,7 @@ import { charOptions } from "../styleSelection/charOptions";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 ///animations and styles
-import generalStyles from "@/components/styleExport";
+import generalStyles from "../styleExport";
 import "rc-slider/assets/index.css";
 import type React from "react";
 //icons
@@ -22,23 +22,23 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ReplayIcon from "@mui/icons-material/Replay";
 
 type VideoSettingsProp = {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  uploadVideo: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  artSize: number;
-  setArtSize: React.Dispatch<React.SetStateAction<number>>;
-  chars: string;
-  setChars: React.Dispatch<React.SetStateAction<string>>;
-  invert: boolean;
-  setInvert: React.Dispatch<React.SetStateAction<boolean>>;
-  colored: boolean;
-  setColored: React.Dispatch<React.SetStateAction<boolean>>;
-  asciiArt: string;
-  refArt: React.RefObject<HTMLPreElement | null>;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  playing: boolean;
-  setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-  handleReplay: () => void;
-  ended: boolean;
+  canvasRef?: React.RefObject<HTMLCanvasElement | null>;
+  uploadVideo?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  artSize?: number;
+  setArtSize?: React.Dispatch<React.SetStateAction<number>>;
+  chars?: string;
+  setChars?: React.Dispatch<React.SetStateAction<string>>;
+  invert?: boolean;
+  setInvert?: React.Dispatch<React.SetStateAction<boolean>>;
+  colored?: boolean;
+  setColored?: React.Dispatch<React.SetStateAction<boolean>>;
+  asciiArt?: string;
+  refArt?: React.RefObject<HTMLPreElement | null>;
+  videoRef?: React.RefObject<HTMLVideoElement | null>;
+  playing?: boolean;
+  setPlaying?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleReplay?: () => void;
+  ended?: boolean;
 };
 const {
   field,
@@ -81,12 +81,12 @@ export default function VideoSettings({
           <div
             className={`relative w-full h-100 border-1 border-green-400 border-dashed items-center flex justify-center ${asciiArt ? "cursor-pointer" : "cursor-not-allowed"}`}
             onClick={() => {
-              if (ended) {
+              if (ended && handleReplay) {
                 handleReplay();
-              } else if (playing) {
+              } else if (playing && videoRef && setPlaying) {
                 videoRef.current?.pause();
                 setPlaying(false);
-              } else {
+              } else if (videoRef && setPlaying) {
                 videoRef.current?.play();
                 setPlaying(true);
               }
@@ -114,6 +114,7 @@ export default function VideoSettings({
               accept="video/*"
               onChange={uploadVideo}
               className="hidden"
+              data-testid="input-vid"
             />
             <FileUploadIcon />
           </label>
@@ -125,33 +126,36 @@ export default function VideoSettings({
             <div>
               <label>Characters:</label>
               <div className="flex flex-row items-center gap-3 w-[218px] mt-1.5">
-                <Slider
-                  min={30}
-                  max={170}
-                  value={artSize}
-                  onChange={(value) => {
-                    if (typeof value === "number") setArtSize(value);
-                  }}
-                  // active line
-                  trackStyle={{
-                    backgroundColor: "#4ade80",
-                    height: 6, //
-                  }}
-                  // slider 🟢
-                  handleStyle={{
-                    borderColor: "#4ade80",
-                    height: 15,
-                    width: 15,
-                    marginTop: -5,
-                    backgroundColor: "#000000",
-                  }}
-                  // inactive line
-                  railStyle={{
-                    backgroundColor: "#333",
-                    height: 6,
-                  }}
-                  className={`min-w-50`}
-                />
+                <div data-testid="video-slider">
+                  <Slider
+                    min={30}
+                    max={170}
+                    value={artSize}
+                    onChange={(value) => {
+                      if (typeof value === "number" && setArtSize)
+                        setArtSize(value);
+                    }}
+                    // active line
+                    trackStyle={{
+                      backgroundColor: "#4ade80",
+                      height: 6, //
+                    }}
+                    // slider 🟢
+                    handleStyle={{
+                      borderColor: "#4ade80",
+                      height: 15,
+                      width: 15,
+                      marginTop: -5,
+                      backgroundColor: "#000000",
+                    }}
+                    // inactive line
+                    railStyle={{
+                      backgroundColor: "#333",
+                      height: 6,
+                    }}
+                    className={`min-w-50`}
+                  />
+                </div>
                 <p>{artSize}</p>
               </div>
             </div>
@@ -161,6 +165,7 @@ export default function VideoSettings({
               <Select value={chars} onValueChange={setChars}>
                 <SelectTrigger
                   className={`${selectTriggerStyle} ${field} w-[218px]`}
+                  data-testid="char-selector-vid"
                 >
                   <SelectValue
                     placeholder="ASCII Style"
@@ -171,10 +176,10 @@ export default function VideoSettings({
                   {charOptions.map((char, idx) => (
                     <SelectItem
                       key={idx}
-                      value={char.elements}
+                      value={char.name}
                       className={selectItemStyle}
                     >
-                      {char.name} - {char.elements}
+                      {char.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -199,7 +204,10 @@ export default function VideoSettings({
                     },
                   }}
                   value={invert}
-                  onChange={() => setInvert((s) => !s)}
+                  onChange={() => {
+                    if (setInvert) setInvert((s) => !s);
+                  }}
+                  data-testid="invert-vid"
                 />
               }
               label="Invert colors"
@@ -219,7 +227,10 @@ export default function VideoSettings({
                     },
                   }}
                   value={colored}
-                  onChange={() => setColored((s) => !s)}
+                  onChange={() => {
+                    if (setColored) setColored((s) => !s);
+                  }}
+                  data-testid="colored-vid"
                 />
               }
               label="Use original colors"
@@ -232,7 +243,7 @@ export default function VideoSettings({
         <pre
           className={`mt-10 whitespace-pre ${invert ? "bg-zinc-300 text-black" : "bg-black text-white"} text-sm `}
           ref={refArt}
-          dangerouslySetInnerHTML={{ __html: asciiArt }}
+          dangerouslySetInnerHTML={{ __html: asciiArt || "" }}
         />
       </div>
     </div>

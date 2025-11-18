@@ -32,6 +32,9 @@ Once the conversion is complete, the result can be **saved, copied, or exported*
 - **Framer Motion** — smooth content transitions between pages
 - **React Bits** — text typing animation
 - **ESLint** and **Prettier** — for consistent code formatting and linting
+- **Vitest** — test runner
+- **React Testing Library** — component testing utilities
+- **jest-dom** — extended DOM matchers (e.g., `toBeInTheDocument`)
 
 ---
 

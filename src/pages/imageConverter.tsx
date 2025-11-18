@@ -15,7 +15,7 @@ const { terminal, terminalLabel, innerContainer } = generalStyles;
 export default function ImageConverter() {
   const [showImage, setShowImage] = useLocalStorage("showImage", false);
   const [asciiArt, setAsciiArt] = useState("");
-  const [chars, setChars] = useLocalStorage("charsImg", "@%#*+=-:. ");
+  const [chars, setChars] = useLocalStorage("charsImg", "classChars");
   const [artSize, setArtSize] = useLocalStorage("artSizeImg", 80);
   const [invert, setInvert] = useState(false);
   const [colored, setColored] = useState(false);
